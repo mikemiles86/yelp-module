@@ -110,7 +110,7 @@
 			'#type' => 'textfield',
 			'#title' => t('Title'),
 			'#default_value' => $edit['title'],
-			'#maxlength' => 20,
+			'#maxlength' => 300,
 			'#description' => t('Title for this block'),
 			'#required' => TRUE);
 			
@@ -276,8 +276,8 @@
 				watchdog('yelp', 'Created New Yelp Block For Node %nid.',  array('%nid' => $form_state['values']['nid']), WATCHDOG_NOTICE, l(t('edit'), 'admin/content/yelp/edit/'. $form_state['values']['yid']));
 				break;
 			case SAVED_UPDATED:
-				drupal_set_message(t('Updated Faculty Member %name.', array('%name' => $form_state['values']['name'])));
-				watchdog('school', 'Updated Faculty Member %name.', array('%name' => $form_state['values']['name']), WATCHDOG_NOTICE, l(t('edit'), 'admin/content/yelp/edit/'. $form_state['values']['yid']));
+				drupal_set_message(t('Updated Yelp Block For Node %nid.', array('%name' => $form_state['values']['nid'])));
+				watchdog('school', 'Updated Yelp Block For Node %nid.', array('%name' => $form_state['values']['nid']), WATCHDOG_NOTICE, l(t('edit'), 'admin/content/yelp/edit/'. $form_state['values']['yid']));
 			break;
 		}
 
