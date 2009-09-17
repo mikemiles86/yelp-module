@@ -1,0 +1,7 @@
+/* $Id$ */
+/* path-admin-foo-bar corresponds to menu items with the path admin/foo/bar */
+ul.menu .path-admin-content-yelp span.icon,
+ul.admin-list .path-admin-content-yelp span.icon,
+ul.links .path-admin-content-yelp span.icon {
+  background: transparent url('yelp_icon.png') no-repeat; !important;
+}
