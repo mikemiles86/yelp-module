@@ -1,5 +1,4 @@
 <?php
-; $Id$
 name = Yelp
 description = Display Business listings & ratings from Yelp.com (using the Yelp API) in a Block.  can display different searches for individual pages.
 package = Other

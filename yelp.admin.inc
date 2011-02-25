@@ -1,5 +1,4 @@
 <?PHP
-// $Id$
 
 	/**
 	 * Returns an administrative overview.

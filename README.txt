@@ -1,4 +1,3 @@
-$Id$
 
 Yelp Module for Drupal 6.x
 

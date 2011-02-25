@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file yelp-block.tpl.php

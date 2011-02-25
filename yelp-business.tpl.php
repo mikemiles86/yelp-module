@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * @file yelp-business.tpl.php
