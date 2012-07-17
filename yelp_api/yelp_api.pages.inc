@@ -137,10 +137,11 @@
    */
   function _yelp_api_format_search_query($search_parameters) {
     $query = array();
-
-    foreach ($search_parameters as $key  => $value) {
-      $value = urlencode(trim(preg_replace('/\s+/' , ' ' , $value)));
-      $query[] = $key . '=' . $value;
+    if (is_array($search_parameters)){
+      foreach ($search_parameters as $key  => $value) {
+        $value = urlencode(trim(preg_replace('/\s+/' , ' ' , $value)));
+        $query[] = $key . '=' . $value;
+      }
     }
     return implode('&' , $query);
   }
@@ -165,7 +166,7 @@
     }
     //format the search parameters
     $search_parameters = _yelp_api_format_search_parameters($search_parameters);
-    $results = yelp_api_perform_search($search_paremeters);
+    $results = yelp_api_perform_search($search_parameters);
     return $results;
   }
   
@@ -418,10 +419,10 @@
   function yelp_api_filter_data($data) {
     //get columns in our table
     $filtered_data = array();
-    if ($columns = db_query("SHOW COLUMNS FROM {yelp_data}")) {
-      foreach ($columns as $column) {
-        if (isset($data[$column->field])) {
-          $filtered_data[$column->field] = $data[$column->field];
+    if ($schema = drupal_get_schema('yelp_data')){
+      foreach ($schema['fields'] as $field=>$info) {
+        if (isset($data[$field])) {
+          $filtered_data[$field] = $data[$field];
         }
       }
       $data = $filtered_data;
