@@ -68,7 +68,7 @@
               $value = 25;
             }
             //convert miles to meters (1 mile = 1609.344 meters)
-            $search_parameters['radius_filter'] = ($value * 1609 . 344);
+            $search_parameters['radius_filter'] = ($value * 1609.344);
             break;
           case 'deals':
             if (($value!=0) && ($value != 1)) {
@@ -192,7 +192,7 @@
       //do nothing
     //else perform the search  
     }
-    elseif ($results = _yelp_api_apiCall('http://api . yelp . com/v2/search?' . $search_query)) {
+    elseif ($results = _yelp_api_apiCall('http://api.yelp.com/v2/search?' . $search_query)) {
       //save results to cache for x hour(s) ,  default is 1
       $results_cache_hours  = variable_get('yelp_api_cache_results' , 1);
       cache_set('yelp-api-search-' . $search_query , $results , 'cache' , mktime(date('H')+$results_cache_hours));
