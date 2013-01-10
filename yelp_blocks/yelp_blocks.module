@@ -175,7 +175,7 @@
     return $block;
   }
 
-    /**
+  /**
    * Implements hook_form_alter()
    */
   function yelp_blocks_form_alter(&$form, &$form_state, $form_id) {
@@ -185,6 +185,18 @@
       $form['settings']['yelp-blocks'] = $form['settings']['settings']['yelp-blocks'];
       unset($form['settings']['settings']['yelp-blocks']);
     }
+		elseif ($form_id == 'block_admin_display_form'){
+			// add a delete link for each yelp block
+			if ($yelp_blocks = yelp_blocks_get_blocks()) {
+				foreach ($yelp_blocks as $machine_name  => $block) {
+					$form['blocks']['yelp_blocks_'.$machine_name]['delete'] = array(
+						'#type' => 'link',
+						'#title' => t('delete'),
+						'#href' => 'admin/structure/yelp-blocks/' . $machine_name . '/delete',
+					);
+				}
+      }
+		}
   }
   
   /**
