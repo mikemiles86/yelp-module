@@ -50,6 +50,7 @@
    */
   function _yelp_api_parse_categories($raw) {
     $categories = array();
+		if ($raw && is_array($raw)){
       foreach ($raw as $x => $category) {
         if (is_array($category)) {
           list($pkey, $pval) = _yelp_api_category_key_values($raw[$x-1]);
@@ -60,7 +61,8 @@
           $categories[$key] = $value;
         }
       }
-      return $categories;
+		}
+    return sizeof($categories)>0 ? $categories:false;
   }
   
   /**
