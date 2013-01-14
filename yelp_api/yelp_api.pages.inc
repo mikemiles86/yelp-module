@@ -327,6 +327,7 @@
       //yay ,  we have the data
     }
     else{
+			watchdog('yelp_api','Unable to make a successful call to \'%url\'',array('%url'=>$url),WATCHDOG_WARNING);
       $data = FALSE;
     }
     return $data;

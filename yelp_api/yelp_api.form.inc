@@ -108,11 +108,12 @@
     module_load_include('inc' , 'yelp_api' , 'yelp_api.categories');
     $selected_categories = ($yelp_object && isset($yelp_object->yelp_settings->categories)) ? $yelp_object->yelp_settings->categories:FALSE;
     yelp_api_build_form_categories($form , $selected_categories);
-    $form['yelp-settings']['yelp-categories'] = $form['yelp-categories'];
-    unset($form['yelp-categories']);
-    $form['yelp-settings']['yelp-categories']['#description'] = t('Select which categories from yelp to query');
-    $form['yelp-settings']['yelp-categories']['#element_validate'] = array('yelp_api_form_field_validate');
-    
+    if (isset($form['yelp-categories'])){
+			$form['yelp-settings']['yelp-categories'] = $form['yelp-categories'];
+			unset($form['yelp-categories']);
+			$form['yelp-settings']['yelp-categories']['#description'] = t('Select which categories from yelp to query');
+			$form['yelp-settings']['yelp-categories']['#element_validate'] = array('yelp_api_form_field_validate');
+    }
     //add token description to specific fields
     if (module_exists('token')) {
       $token_desc                                                      = t('This field supports tokens.');
