@@ -51,7 +51,7 @@
           case 'categories':
             $categories = yelp_api_get_categories(TRUE);
             if (!is_array($value)) {
-              $value = explode(',' , $value);
+              $value = explode(',' , $value); //explode on comma
             }
             //only use valid categories
             $cvals = array();
@@ -60,7 +60,7 @@
                 $cvals[] = $cat;
               }
             }
-            $value = implode(',' , $cvals);
+            $value = implode(',' , $cvals); //seperate by comma
             $search_parameters['category_filter'] = $value;
             break;
           case 'radius':
