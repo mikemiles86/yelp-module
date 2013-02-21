@@ -1,5 +1,0 @@
-name = Yelp Business
-description = Provides integration with <a href="http://www.yelp.com/developers/documentation/v2/business" target="_blank">Yelp's Business API</a>
-core = 7.x
-package = Yelp
-dependencies[] = yelp_api
