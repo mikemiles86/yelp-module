@@ -22,7 +22,7 @@
       $categories_html   = strip_tags(preg_replace('/[\s\t\n\r]+/', ' ', $html), '<ul><li>');
       $categories_html   = array_pop(explode('<ul class="attr-list">', $categories_html));
       $categories_html   = array_shift(explode('<ul> <li class="sidebar', '<ul>' . $categories_html));
-      //change HTML list into json string
+     //change HTML list into json string
       $categories_json  = str_replace(array('<ul>', '</ul>', '<li>', '</li>'), array('[', ']', '"', '"'), $categories_html);
       //handle nested arrays
       $categories_json  = trim(str_replace(array('] [', '" "', '" [', '] "'), array('], [', '", "', '", [', '], "'), $categories_json));
@@ -51,7 +51,7 @@
    */
   function _yelp_api_parse_categories($raw) {
     $categories = array();
-		if ($raw && is_array($raw)){
+    if ($raw && is_array($raw)){
       foreach ($raw as $x => $category) {
         if (is_array($category)) {
           list($pkey, $pval) = _yelp_api_category_key_values($raw[$x-1]);
@@ -62,7 +62,7 @@
           $categories[$key] = $value;
         }
       }
-		}
+    }
     return sizeof($categories)>0 ? $categories:false;
   }
 
