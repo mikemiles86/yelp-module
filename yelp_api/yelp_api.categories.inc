@@ -3,13 +3,13 @@
    * @file yelp_api.categories.inc
    *  Contains functions related to fetching, displaying, and selecting yelp categories
    */
-   
+
   /**
    * Fetches a nested php associative array of Yelp categories.
    * Since Yelp does not provide an API call to be able to retrieve the list of thier categories
    * The HTML page has to be scraped. Invoked by yelp_api_get_categories()
    *
-   * @return array 
+   * @return array
    *  A nested array of yelp categories, or returns boolean FALSE if failed.
    */
   function _yelp_api_fetch_categories() {
@@ -20,7 +20,8 @@
     if ($html=_yelp_api_doCall($yelp_url)) {
       //scrape the HTML to get the categories list
       $categories_html   = strip_tags(preg_replace('/[\s\t\n\r]+/', ' ', $html), '<ul><li>');
-      $categories_html   = array_shift(explode('<ul> <li class="sidebar', '<ul>' . array_pop(explode('<ul class="attr-list">', $categories_html))));
+      $categories_html   = array_pop(explode('<ul class="attr-list">', $categories_html));
+      $categories_html   = array_shift(explode('<ul> <li class="sidebar', '<ul>' . $categories_html));
       //change HTML list into json string
       $categories_json  = str_replace(array('<ul>', '</ul>', '<li>', '</li>'), array('[', ']', '"', '"'), $categories_html);
       //handle nested arrays
@@ -33,12 +34,12 @@
     else{
       $categories        = FALSE;
     }
-    
+
     return $categories;
   }
-  
+
   /**
-   * A recursive function that parses the raw categories php array from _yelp_api_fetch_categories 
+   * A recursive function that parses the raw categories php array from _yelp_api_fetch_categories
    * and forms a nested associate array.
    *
    * @param array $raw
@@ -64,7 +65,7 @@
 		}
     return sizeof($categories)>0 ? $categories:false;
   }
-  
+
   /**
    * Splits raw category into display/key values. Invoked by _yelp_api_parse_categories()
    *
@@ -82,7 +83,7 @@
     $key    = trim(str_replace(')', '', $key));
     return array($key, $value);
   }
-  
+
   /**
    * Flattens yelp categories nested array into a single level, recursively.
    * Invoked by yelp_api_get_categories() if the $flatten flag is passed.
@@ -93,7 +94,7 @@
    * @return array
    *    a flatened array of categories
    *
-   * @see yelp_api_get_categories() 
+   * @see yelp_api_get_categories()
    */
   function _yelp_api_flatten_categories($categories) {
     $flattened = array();
@@ -111,7 +112,7 @@
     }
     return $flattened;
   }
-  
+
   /**
    * Returns a associative array of categories.
    * If the $flatten flag is not passed, the array is nested.
@@ -138,7 +139,7 @@
     //do we want to flatten and successfuly retireved a list? or just return categories.
     return ($flatten && $categories) ? _yelp_api_flatten_categories($categories):$categories;
   }
-  
+
   /**
    * Recursive function to build checkbox form fields for categories. Invoked by yelp_api_build_form_categories()
    *
@@ -155,8 +156,8 @@
   function _yelp_api_build_categories_form_fields(&$form, $categories, $selected=array()) {
     foreach ($categories as $key  => $value) {
       $form['yelp-category-' . $key] = array(
-        '#type'           => 'checkbox', 
-        '#return_value'   => $key, 
+        '#type'           => 'checkbox',
+        '#return_value'   => $key,
       );
       //checkif category is selected.
       if (is_array($selected) && in_array($key, $selected)) {
@@ -165,14 +166,14 @@
         }
         $form['yelp-category-' . $key]['#attributes'] = array('checked' => 'checked');
       }
-      
+
       if (is_array($value)) {
         $form['yelp-category-' . $key]['#title'] = $value[0];
         $form['yelp-sub_categories-' . $key] = array(
-          '#type'           => 'fieldset', 
-          '#title'         => $value[0] . ' sub-categories', 
-          '#collapsible'   => TRUE, 
-          '#collapsed'     => TRUE, 
+          '#type'           => 'fieldset',
+          '#title'         => $value[0] . ' sub-categories',
+          '#collapsible'   => TRUE,
+          '#collapsed'     => TRUE,
         );
         _yelp_api_build_categories_form_fields($form['yelp-sub_categories-' . $key], $value[1], $selected);
       }
@@ -181,7 +182,7 @@
       }
     }
   }
-  
+
   /**
    * Create form elements to select yelp categories
    *
@@ -199,27 +200,27 @@
       //passed a fieldset to add to?
       if (isset($form['#type']) && ($form['#type'] == 'fieldset')) {
         _yelp_api_build_categories_form_fields($form, $categories, $selected);
-      //add a fieldset to the form  
+      //add a fieldset to the form
       }
       else{
         $form['yelp-categories'] = array(
-          '#type'         => 'fieldset', 
-          '#title'       => t('Categories'), 
-          '#collapsible' => TRUE, 
-          '#collapsed'    => FALSE, 
-          '#description' => t('Select Yelp categories.'), 
+          '#type'         => 'fieldset',
+          '#title'       => t('Categories'),
+          '#collapsible' => TRUE,
+          '#collapsed'    => FALSE,
+          '#description' => t('Select Yelp categories.'),
         );
         _yelp_api_build_categories_form_fields($form['yelp-categories'], $categories, $selected);
       }
     }
   }
-  
+
   /**
    * Gets a list of the yelp categories that were selected in a form
    *
    * @param array $form_state
    *  Passed form state array
-   * 
+   *
    * @return array
    *  array of selected yelp categories
    */
@@ -233,4 +234,4 @@
       }
     }
     return $selected;
-  }  
+  }
