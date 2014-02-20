@@ -19,9 +19,9 @@
     module_load_include('inc' , 'yelp_api' , 'yelp_api.tokens');
     $search_parameters = array();
     foreach ($unformatted as $key => $value) {
-      //is value a token ? 
-      if (module_exists('token') && is_string($value) && preg_match('/^\[[^\]]+\]$/' , $value)) {
-        $value = yelp_api_replace_token($value);
+      //does value have tokens in it?
+      if (module_exists('token') && is_string($value) && preg_match('/\[[^\]]+\]/', $value)) {
+        $value = preg_replace_callback('/\[([^\]]+)\]/', '_yelp_api_callback_replace_tokens', $value);
       }
       
       if ($value!==FALSE) {
@@ -121,6 +121,19 @@
     $search_parameters = yelp_api_hook_alter_search_parameters($search_parameters);
     
     return $search_parameters;
+  }
+
+  /**
+   * Callback function to call yelp_api_replace_token. Invoked by _yelp_api_format_search_parameters
+   * 
+   * @param array $maches
+   *  array consisting of two elements, the first is the matched string (token) and the second is the token name
+   *
+   * @return string
+   *  a string with the token replaced
+   */
+  function _yelp_api_callback_replace_tokens($matches) {
+      return yelp_api_replace_token($matches[0]);
   }
   
   /**
