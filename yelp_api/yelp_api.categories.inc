@@ -15,7 +15,7 @@
   function _yelp_api_fetch_categories() {
     // get the band-aids ready, we're about to get some scrapes.
     // scrape the yelp.com categories, to get an updated list.
-    $yelp_url = 'http://www.yelp.com/developers/documentation/category_list';
+    $yelp_url = 'http://www.yelp.com/developers/documentation/v2/category_list';
     module_load_include('inc', 'yelp_api', 'yelp_api.pages');
     if ($html=_yelp_api_doCall($yelp_url)) {
       //scrape the HTML to get the categories list
