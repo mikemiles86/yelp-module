@@ -54,13 +54,16 @@
     // Retrieve the category name and machine name
     list($category, $machine_name) = explode('(', $category_element->firstChild->wholeText);
     $category = trim($category);
+    // Get machine name
     $machine_name = trim(str_replace(')','',$machine_name));
     // Are there child categories?
     if (isset($category_element->lastChild->tagName) && ($category_element->lastChild->tagName == 'ul')) {
       $sub = array();
+      //get the list of sub-categories
       $sub_lis = $xpath->query(".//li", $category_element->lastChild);
       // fetch child categories.
       foreach ($sub_lis as $li) {
+        //Recursively build usb list of categories.
         $sub = array_merge($sub, _yelp_api_parse_categories($xpath, $li));
       }
       $category = array($category, $sub);
