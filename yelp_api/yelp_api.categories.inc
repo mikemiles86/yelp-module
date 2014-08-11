@@ -16,23 +16,24 @@
     // get the band-aids ready, we're about to get some scrapes.
     // scrape the yelp.com categories, to get an updated list.
     $yelp_url = 'http://www.yelp.com/developers/documentation/v2/category_list';
-    module_load_include('inc', 'yelp_api', 'yelp_api.pages');
-    if ($html=_yelp_api_doCall($yelp_url)) {
-      //scrape the HTML to get the categories list
-      $categories_html   = strip_tags(preg_replace('/[\s\t\n\r]+/', ' ', $html), '<ul><li>');
-      $categories_html   = array_pop(explode('<ul class="attr-list">', $categories_html));
-      $categories_html   = array_shift(explode('<ul> <li class="sidebar', '<ul>' . $categories_html));
-     //change HTML list into json string
-      $categories_json  = str_replace(array('<ul>', '</ul>', '<li>', '</li>'), array('[', ']', '"', '"'), $categories_html);
-      //handle nested arrays
-      $categories_json  = trim(str_replace(array('] [', '" "', '" [', '] "'), array('], [', '", "', '", [', '], "'), $categories_json));
-      //convert json into php array
-      $categories        = json_decode($categories_json);
-      //format the arrays correctly (key, values and nesting)
-      $categories        = _yelp_api_parse_categories($categories);
-    }
-    else{
-      $categories        = FALSE;
+
+    // Use xPath parser to fetch categories.
+    $categories_data = new DOMDocument();
+    @$categories_data->loadHTMLFile($yelp_url);
+
+    $xpath = new DOMXpath($categories_data);
+    // Get list of category li elements
+    $elements = $xpath->query("//div[contains(concat(' ',normalize-space(@class),' '),' sat-content ')]/ul[@class='bullet-list-round'][1]/li");
+
+    // able to find categories?
+    if ($elements->length > 0) {
+      $categories = array();
+      // Loop through the LI dom elements and build an associate array of categories.
+      foreach ($elements as $li) {
+        $categories = array_merge($categories, _yelp_api_parse_categories($xpath, $li));
+      }
+    } else {
+      $categories = FALSE;
     }
 
     return $categories;
@@ -49,21 +50,23 @@
    *
    * @see _yelp_api_fetch_categories()
    */
-  function _yelp_api_parse_categories($raw) {
-    $categories = array();
-    if ($raw && is_array($raw)){
-      foreach ($raw as $x => $category) {
-        if (is_array($category)) {
-          list($pkey, $pval) = _yelp_api_category_key_values($raw[$x-1]);
-          $categories[$pkey] = array($pval, _yelp_api_parse_categories($category));
-        }
-        else{
-          list($key, $value) = _yelp_api_category_key_values($category);
-          $categories[$key] = $value;
-        }
+  function _yelp_api_parse_categories($xpath, $category_element) {
+    // Retrieve the category name and machine name
+    list($category, $machine_name) = explode('(', $category_element->firstChild->wholeText);
+    $category = trim($category);
+    $machine_name = trim(str_replace(')','',$machine_name));
+    // Are there child categories?
+    if (isset($category_element->lastChild->tagName) && ($category_element->lastChild->tagName == 'ul')) {
+      $sub = array();
+      $sub_lis = $xpath->query(".//li", $category_element->lastChild);
+      // fetch child categories.
+      foreach ($sub_lis as $li) {
+        $sub = array_merge($sub, _yelp_api_parse_categories($xpath, $li));
       }
+      $category = array($category, $sub);
     }
-    return sizeof($categories)>0 ? $categories:false;
+
+    return array($machine_name => $category);
   }
 
   /**
