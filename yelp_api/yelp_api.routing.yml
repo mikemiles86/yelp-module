@@ -1,0 +1,11 @@
+yelp.admin_settings:
+path: '/admin/config/services/yelp'
+defaults:
+  _content: '\Drupal\block\Controller\BlockController::demo'
+  _title_callback: 'theme_handler:getName'
+requirements:
+  _access_theme: 'TRUE'
+  _permission: 'administer yelp settings'
+options:
+  _admin_route: FALSE
+# Still working on
