@@ -1,0 +1,3 @@
+administer yelp settings:
+  title: 'Administer Yelp Settings'
+  description: 'Control setttings of the Yelp API'

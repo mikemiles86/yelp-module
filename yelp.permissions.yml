@@ -1,0 +1,7 @@
+administer yelp settings:
+  title: 'Administer Yelp Settings'
+  description: 'Control setttings of the Yelp API'
+administer yelp blocks:
+  title: 'Administer Yelp Blocks'
+  description: 'Give access to the Yelp blocks admin section'
+
